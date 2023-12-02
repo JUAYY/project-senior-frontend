@@ -9,7 +9,7 @@ const routes = [
         component: () => import("pages/LoginPage.vue"),
       },
       {
-        path: "/up",
+        path: "/signup",
         name: "Signup",
         component: () => import("pages/SignupPage.vue"),
       },
@@ -36,9 +36,19 @@ const routes = [
     component: () => import("layouts/EditLayout.vue"),
     children: [
       {
-        path: "",
+        path: "/template/:id",
         name: "Edit",
         component: () => import("pages/EditPage.vue"),
+      },
+      {
+        path: "/create",
+        name: "CreateTemplate",
+        component: () => import("pages/CreateTemplate.vue"),
+      },
+      {
+        path: "/content/:id",
+        name: "EditContent",
+        component: () => import("pages/EditContentPage.vue"),
       },
     ],
   },

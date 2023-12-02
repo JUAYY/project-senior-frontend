@@ -59,13 +59,32 @@
         </div>
       </div>
     </q-card-section>
+
+    <q-card-section class="bg-black">
+      <div class="text-base font-medium my-4 text-center text-white">
+        I M A G E
+      </div>
+      <div class="flex">
+        <div
+          v-for="(file, index) in elementFiles"
+          :key="index"
+          class="h-[120px] w-[120px]"
+          @click="onClickImage(file)"
+        >
+          <img :src="file.config.src" />
+        </div>
+      </div>
+    </q-card-section>
   </q-card>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { findFile } from "src/api/file";
+import { onMounted, ref } from "vue";
 
 const emit = defineEmits(["onAddElement"]);
+
+const elementFiles = ref([]);
 
 const shapeObj = ref({
   circle: {
@@ -112,9 +131,29 @@ const shapeObj = ref({
   },
 });
 
+const getFiles = async () => {
+  const result = await findFile({ category: "/asset/" });
+
+  elementFiles.value = result.data.map((data) => ({
+    type: "image",
+    config: {
+      x: 1,
+      y: 1,
+      width: 100,
+      height: 100,
+      src: data.url,
+      draggable: true,
+    },
+  }));
+};
+
 const onClickShape = (val) => {
   const shape = shapeObj.value[val];
   if (!shape) return;
   emit("onAddElement", shape);
 };
+
+const onClickImage = (val) => emit("onAddElement", val);
+
+onMounted(() => getFiles());
 </script>

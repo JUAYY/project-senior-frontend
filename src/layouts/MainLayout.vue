@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="bg-slate-950 h-32 flex justify-center items-center">
-        <div class="">
+        <div class="drawer cursor-pointer" @click="open('bottom')">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
@@ -48,6 +48,23 @@
         </div>
       </div>
     </div>
+    <div class="relative">
+      <q-dialog
+        class="absolute bottom-0 right-0"
+        v-model="dialog"
+        :position="position"
+      >
+        <q-card style="width: 400px; height: 300px">
+          <q-card-section class="row items-center no-wrap">
+            <div class="flex">
+              <div class="text-weight-bold">Logout</div>
+              <q-icon class="px-2" name="keyboard_double_arrow_down" />
+            </div>
+            <q-space />
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+    </div>
 
     <q-page-container>
       <router-view />
@@ -57,6 +74,20 @@
 
 <script setup>
 import { ref } from "vue";
-</script>
 
-<style scoped></style>
+const dialog = ref(false);
+const position = ref("buttom");
+
+const open = (pos) => {
+  position.value = pos;
+  dialog.value = true;
+};
+
+const setup = () => {
+  return {
+    dialog,
+    position,
+    open,
+  };
+};
+</script>

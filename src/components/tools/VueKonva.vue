@@ -12,33 +12,39 @@
           v-if="item.type == 'circle'"
           :config="item.config"
           @transformend="handleTransformEnd"
+          @dragend="handleDragEnd"
         />
         <v-text
           v-if="item.type == 'text'"
           :config="item.config"
           @transformend="handleTransformEnd"
+          @dragend="handleDragEnd"
           @dblclick="handleEditText"
         />
         <v-rect
           v-if="item.type == 'rect'"
           :config="item.config"
           @transformend="handleTransformEnd"
+          @dragend="handleDragEnd"
         />
         <v-image
           v-if="item.type == 'image'"
           :config="item.config"
           @transformend="handleTransformEnd"
+          @dragend="handleDragEnd"
         />
 
         <v-star
           v-if="item.type == 'star'"
           :config="item.config"
           @transformend="handleTransformEnd"
+          @dragend="handleDragEnd"
         />
         <v-image
           v-if="item.type == 'image'"
           :config="displayImage(item.config)"
           @transformend="handleTransformEnd"
+          @dragend="handleDragEnd"
         />
       </div>
 
@@ -50,7 +56,12 @@
 <script setup>
 import { onMounted, ref } from "vue";
 
-const emit = defineEmits(["onAddElement", "onRemoveElement", "onSelectedItem"]);
+const emit = defineEmits([
+  "onAddElement",
+  "onRemoveElement",
+  "onSelectedItem",
+  "onUploadFile",
+]);
 
 const props = defineProps({
   items: { type: Array },
@@ -204,17 +215,32 @@ const handleEditText = () => {
 const handleTransformEnd = (e) => {
   // shape is transformed, let us save new attrs back to the node
   // find element in our state
-  const item = props.items.find((r) => r.name === selectedShapeName.value);
+  const item = props.items.find((item) => {
+    return item.config.name === selectedShapeName.value;
+  });
+
+  if (!item) return;
 
   // update the state
-  item.x = e.target.x();
-  item.y = e.target.y();
-  item.rotation = e.target.rotation();
-  item.scaleX = e.target.scaleX();
-  item.scaleY = e.target.scaleY();
+  item.config.x = e.target.x();
+  item.config.y = e.target.y();
+  item.config.rotation = e.target.rotation();
+  item.config.scaleX = e.target.scaleX();
+  item.config.scaleY = e.target.scaleY();
+};
 
-  // change fill
-  // rect.fill = Konva.Util.getRandomColor();
+const handleDragEnd = (e) => {
+  // shape is transformed, let us save new attrs back to the node
+  // find element in our state
+  const item = props.items.find((item) => {
+    return item.config.name === selectedShapeName.value;
+  });
+
+  if (!item) return;
+
+  // update the state
+  item.config.x = e.target.x();
+  item.config.y = e.target.y();
 };
 
 const handleStageMouseDown = (e) => {
@@ -270,25 +296,51 @@ const updateTransformer = () => {
   }
 };
 
-const downloadDataURL = () => {
-  console.log("downloaded");
-  const transformerNode = refTranformer.value.getNode();
-  const stage = transformerNode.getStage();
-  const dataURL = stage.toDataURL();
-  const link = document.createElement("a");
-  link.download = "stage.png";
-  link.href = dataURL;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
 const displayImage = async (config) => {
   const image = new window.Image();
   image.src = config.src;
   image.onload = () => {
     config.image = image;
   };
+};
+
+const downloadDataURL = ({ isUpload, isDownload }) => {
+  const transformerNode = refTranformer.value.getNode();
+  transformerNode.nodes([]);
+  const stage = transformerNode.getStage();
+  const dataURL = stage.toDataURL();
+
+  if (!dataURL) return;
+
+  if (isDownload) {
+    const link = document.createElement("a");
+    link.download = "advertisment.png";
+    link.href = dataURL;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  if (isUpload) {
+    // Convert data URL to a Blob
+    const blob = dataURLtoBlob(dataURL);
+    emit("onUploadFile", blob);
+  }
+};
+
+// Function to convert data URL to Blob
+const dataURLtoBlob = (dataURL) => {
+  const parts = dataURL.split(";base64,");
+  const contentType = parts[0].split(":")[1];
+  const raw = window.atob(parts[1]);
+  const rawLength = raw.length;
+  const uint8Array = new Uint8Array(rawLength);
+
+  for (let i = 0; i < rawLength; ++i) {
+    uint8Array[i] = raw.charCodeAt(i);
+  }
+
+  return new Blob([uint8Array], { type: contentType });
 };
 
 defineExpose({ downloadDataURL });

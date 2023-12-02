@@ -8,7 +8,6 @@
           alt=""
         />
       </div>
-
       <!-- element -->
       <div class="flex justify-center items-center bg-white mt-5">
         <div class="w-[50%] bg-white font-medium">
@@ -101,7 +100,7 @@
               <ElementModal @onAddElement="addElement" />
             </q-dialog>
           </div>
-          <div class="bg-white py-7 flex cursor-pointer">
+          <!-- <div class="bg-white py-7 flex">
             <div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -116,24 +115,8 @@
                 />
               </svg>
             </div>
-            <div class="pl-3" @click="productModal = true">
-              Import product image
-            </div>
-
-            <q-dialog v-model="productModal">
-              <q-card style="width: 1200px; max-width: 80vw">
-                <q-card-section class="q-pt-none mt-5">
-                  <UploadFileModal @onAddImage="addElement" />
-                </q-card-section>
-                <q-card-actions class="absolute bottom-6 left-60">
-                </q-card-actions>
-                <div
-                  class="flex justify-center items-center mb-5"
-                  style="width: 3000px"
-                ></div>
-              </q-card>
-            </q-dialog>
-          </div>
+            <div class="pl-3">Import product image</div>
+          </div> -->
           <div class="bg-white py-7 flex font-medium mt-20">
             <div>
               <svg
@@ -173,26 +156,25 @@
           </button>
         </div>
       </div>
-
       <!-- element -->
     </div>
     <div class="basis-9/12 bg-slate-950 h-full">
       <div class="bg-slate-950 flex mr-4">
         <div
-          class="basis-2/5 text-white font-medium rounded-full h-12 mt-8 text-xs flex pl-10"
+          class="text-white font-medium rounded-full h-12 mt-8 text-xs flex pl-10"
         >
           <div class="flex" @click="backToTemp">
             <q-btn size="sm" icon="keyboard_backspace"></q-btn>
-            <div class="mt-4 cursor-pointer">Back to template</div>
+            <div class="mt-4 cursor-pointer">Back to History</div>
           </div>
         </div>
-        <div class="px-2 flex grow basis-3/5 pl-12" size="sm">
+        <div class="px-2 flex grow" size="sm">
           <div
             class="text-white px-5 mt-8 flex text-center justify-center items-center cursor-pointer border transition border-transparent hover:border-white"
             size="sm"
             style="font-size: 12px"
           >
-            {{ nickname }}
+            / &nbsp; {{ nickname }}
             <q-popup-edit
               v-model="nickname"
               :validate="(val) => val.length > 0"
@@ -238,6 +220,7 @@
         <!-- {{ items }} -->
         <div
           class="text-white text-xl bg-slate-500 h-[600px] w-[600px] mt-7 flex justify-center items-center"
+          v-if="items.length"
         >
           <VueKonva
             ref="refKonva"
@@ -260,11 +243,11 @@ import ElementModal from "src/components/edit/ElementModal.vue";
 import TextModal from "src/components/edit/TextModal.vue";
 import ColorModal from "src/components/edit/ColorModal.vue";
 import FontModal from "src/components/edit/FontModal.vue";
-import UploadFileModal from "src/components/edit/UploadFileModal.vue";
 import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
-import { createContent } from "../api/content";
-import { getOneTemplate } from "src/api/template";
+import { updateContent, findOneByID } from "../api/content";
+import { Notify } from "quasar";
+import { upload } from "src/api/file";
 
 const router = useRouter();
 const route = useRoute();
@@ -272,26 +255,23 @@ const route = useRoute();
 const refKonva = ref();
 
 const elementModal = ref(false);
-const productModal = ref(false);
 const textModal = ref(false);
 const colorModal = ref(false);
 const fontModal = ref(false);
-const nickname = ref("nickname");
+const nickname = ref("Add your template name");
 
 const items = ref([]);
+
 const selectName = ref("");
 
-const selectedImages = ref([]);
-
 const backToTemp = () => {
-  router.push({ name: "Template" });
+  router.push({ name: "Home" });
 };
 
 const addElement = (config) => {
   elementModal.value = false;
   textModal.value = false;
   colorModal.value = false;
-  productModal.value = false;
 
   items.value.push(config);
   items.value = items.value.map((item, index) => {
@@ -324,51 +304,46 @@ const downloadDataURL = (config) => {
   refKonva.value.downloadDataURL(config);
 };
 
-const getTemplate = async (id) => {
+const getContent = async (id) => {
   try {
-    const data = await getOneTemplate(id);
+    const data = await findOneByID(id);
     items.value = data.elements;
-
     nickname.value = data.name;
-    // templates.value = data.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-const saveChange = async () => {
-  const user = JSON.parse(sessionStorage.getItem("user"));
-
-  const name = nickname.value;
-  const user_id = user.id;
-  const elements = items.value;
+const saveChange = async (blob) => {
   try {
-    const content = await createContent(name, user_id, elements);
+    const name = nickname.value;
+    const elements = items.value;
+    const contentId = route.params.id;
+
+    /**
+     * @description upload file to api
+     */
+    const data = new FormData();
+    data.append("file", blob, "filename.png");
+    const file = await upload(data);
+
+    const mapElements = elements.map((element) => {
+      if (element.type === "image") delete element.config.image;
+      return element;
+    });
+
+    await updateContent(contentId, name, mapElements, file.url);
+    await getContent(contentId);
+
+    Notify.create({ message: "successs", color: "positive" });
   } catch (error) {
     console.log(error);
-  }
-};
-
-const onFilesAdded = (files) => {
-  if (files && files.length > 0) {
-    const imagePromises = files.map((file) => {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          resolve(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(imagePromises).then((imageUrls) => {
-      selectedImages.value = imageUrls;
-    });
   }
 };
 
 onMounted(() => {
-  const templateId = route.params.id;
-  getTemplate(templateId);
+  const contentId = route.params.id;
+
+  getContent(contentId);
 });
 </script>

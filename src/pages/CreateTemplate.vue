@@ -8,7 +8,6 @@
           alt=""
         />
       </div>
-
       <!-- element -->
       <div class="flex justify-center items-center bg-white mt-5">
         <div class="w-[50%] bg-white font-medium">
@@ -101,7 +100,7 @@
               <ElementModal @onAddElement="addElement" />
             </q-dialog>
           </div>
-          <div class="bg-white py-7 flex cursor-pointer">
+          <!-- <div class="bg-white py-7 flex">
             <div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -116,24 +115,8 @@
                 />
               </svg>
             </div>
-            <div class="pl-3" @click="productModal = true">
-              Import product image
-            </div>
-
-            <q-dialog v-model="productModal">
-              <q-card style="width: 1200px; max-width: 80vw">
-                <q-card-section class="q-pt-none mt-5">
-                  <UploadFileModal @onAddImage="addElement" />
-                </q-card-section>
-                <q-card-actions class="absolute bottom-6 left-60">
-                </q-card-actions>
-                <div
-                  class="flex justify-center items-center mb-5"
-                  style="width: 3000px"
-                ></div>
-              </q-card>
-            </q-dialog>
-          </div>
+            <div class="pl-3">Import product image</div>
+          </div> -->
           <div class="bg-white py-7 flex font-medium mt-20">
             <div>
               <svg
@@ -173,7 +156,6 @@
           </button>
         </div>
       </div>
-
       <!-- element -->
     </div>
     <div class="basis-9/12 bg-slate-950 h-full">
@@ -260,11 +242,9 @@ import ElementModal from "src/components/edit/ElementModal.vue";
 import TextModal from "src/components/edit/TextModal.vue";
 import ColorModal from "src/components/edit/ColorModal.vue";
 import FontModal from "src/components/edit/FontModal.vue";
-import UploadFileModal from "src/components/edit/UploadFileModal.vue";
 import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 import { createContent } from "../api/content";
-import { getOneTemplate } from "src/api/template";
 
 const router = useRouter();
 const route = useRoute();
@@ -272,16 +252,253 @@ const route = useRoute();
 const refKonva = ref();
 
 const elementModal = ref(false);
-const productModal = ref(false);
 const textModal = ref(false);
 const colorModal = ref(false);
 const fontModal = ref(false);
 const nickname = ref("nickname");
 
-const items = ref([]);
+const items = ref([
+  {
+    type: "image",
+    config: {
+      x: 0,
+      y: 0,
+      width: 600,
+      height: 600,
+      src: "src/assets/background/background-red.png",
+      name: "1",
+      draggable: true,
+    },
+  },
+  {
+    type: "image",
+    config: {
+      x: 150,
+      y: 200,
+      width: 600,
+      height: 600,
+      src: "src/assets/flower/group-rose.png",
+      name: "2",
+      draggable: true,
+    },
+  },
+  {
+    type: "image",
+    config: {
+      x: 200,
+      y: 0,
+      width: 600,
+      height: 600,
+      src: "src/assets/effect/effect-red.png",
+      opacity: 0.3,
+      draggable: true,
+      name: "3",
+    },
+  },
+  {
+    type: "image",
+    config: {
+      x: -150,
+      y: 80,
+      width: 600,
+      height: 600,
+      src: "src/assets/effect/white-effect.png",
+      draggable: true,
+      opacity: 0.8,
+      name: "4",
+    },
+  },
+  {
+    type: "image",
+    config: {
+      x: -30,
+      y: 150,
+      width: 400,
+      height: 400,
+      src: "src/assets/product/pink.png",
+      name: "5",
+      draggable: true,
+    },
+  },
+  {
+    type: "image",
+    config: {
+      x: 376,
+      y: 850,
+      rotation: "-180",
+      width: 400,
+      height: 400,
+      src: "src/assets/product/pink.png",
+      name: "6",
+      draggable: true,
+      opacity: 0.15,
+    },
+  },
+  {
+    type: "text",
+    config: {
+      x: 200,
+      y: 80,
+      fontSize: "30",
+      fontFamily: "Poppins",
+      fill: "#ffffff",
+      text: "R O S E  S K I N",
+      name: "7",
+      draggable: true,
+    },
+  },
+  {
+    type: "text",
+    config: {
+      x: 185,
+      y: 120,
+      fontSize: "14",
+      fontFamily: "Poppins",
+      fill: "white",
+      text: "Lorem ipsum dolor sit amet, consectetur.",
+      name: "8",
+      draggable: true,
+    },
+  },
+  {
+    type: "text",
+    config: {
+      x: 170,
+      y: 140,
+      fontSize: "14",
+      fontFamily: "Poppins",
+      fill: "white",
+      text: "Lorem ipsum dolor sit amet, consectetur magna.",
+      name: "9",
+      draggable: true,
+    },
+  },
+  {
+    type: "rect",
+    config: {
+      name: "10",
+      rotation: 0,
+      x: 230,
+      y: 175,
+      width: 150,
+      height: 35,
+      scaleX: 1,
+      scaleY: 1,
+      fill: "white",
+      cornerRadius: 5,
+      draggable: true,
+    },
+  },
+  {
+    type: "text",
+    config: {
+      x: 270,
+      y: 186,
+      fontStyle: "",
+      fontSize: "14",
+      fontFamily: "Poppins",
+      text: "BUY NOW",
+      name: "11",
+      draggable: true,
+    },
+  },
+  {
+    type: "image",
+    config: {
+      x: 165,
+      y: 300,
+      width: 80,
+      height: 80,
+      opacity: 0.9,
+      src: "src/assets/effect/sparkle-white.png",
+      name: "12",
+      draggable: true,
+    },
+  },
+  {
+    type: "image",
+    config: {
+      x: 420,
+      y: 300,
+      width: 650,
+      height: 650,
+      rotation: 80,
+      opacity: 0.7,
+      src: "src/assets/flower/rose-pental.png",
+      name: "13",
+      draggable: true,
+    },
+  },
+  {
+    type: "image",
+    config: {
+      x: 250,
+      y: 450,
+      width: 650,
+      height: 650,
+      rotation: 270,
+      opacity: 0.5,
+      src: "src/assets/flower/rose-pental.png",
+      name: "14",
+      draggable: true,
+    },
+  },
+  {
+    type: "image",
+    config: {
+      x: 215,
+      y: 350,
+      width: 180,
+      height: 180,
+      opacity: 0.8,
+      src: "src/assets/flower/rose-pental.png",
+      name: "15",
+      draggable: true,
+    },
+  },
+  {
+    type: "image",
+    config: {
+      x: 50,
+      y: 570,
+      width: 100,
+      height: 100,
+      rotation: "-90",
+      opacity: 0.2,
+      src: "src/assets/flower/rose.png",
+      name: "16",
+      draggable: true,
+    },
+  },
+  {
+    type: "image",
+    config: {
+      x: 50,
+      y: 420,
+      width: 100,
+      height: 100,
+      src: "src/assets/flower/rose.png",
+      name: "17",
+      draggable: true,
+    },
+  },
+  {
+    type: "text",
+    config: {
+      x: 180,
+      y: 500,
+      rotation: "-90",
+      fontSize: "30",
+      fontFamily: "Sacramento",
+      fontStyle: "bold",
+      text: "- rose skin -",
+      opacity: 0.5,
+      name: "18",
+      draggable: true,
+    },
+  },
+]);
 const selectName = ref("");
-
-const selectedImages = ref([]);
 
 const backToTemp = () => {
   router.push({ name: "Template" });
@@ -291,7 +508,6 @@ const addElement = (config) => {
   elementModal.value = false;
   textModal.value = false;
   colorModal.value = false;
-  productModal.value = false;
 
   items.value.push(config);
   items.value = items.value.map((item, index) => {
@@ -336,34 +552,22 @@ const getTemplate = async (id) => {
   }
 };
 
-const saveChange = async () => {
+const saveChange = async (file) => {
   const user = JSON.parse(sessionStorage.getItem("user"));
 
-  const name = nickname.value;
-  const user_id = user.id;
-  const elements = items.value;
   try {
-    const content = await createContent(name, user_id, elements);
+    const name = nickname.value;
+    const user_id = user.id;
+    const mapElements = items.value.map((element) => {
+      if (element.type === "image") delete element.config.image;
+      return element;
+    });
+
+    await createContent(name, user_id, mapElements);
+
+    router.push({ name: "Home" });
   } catch (error) {
     console.log(error);
-  }
-};
-
-const onFilesAdded = (files) => {
-  if (files && files.length > 0) {
-    const imagePromises = files.map((file) => {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          resolve(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(imagePromises).then((imageUrls) => {
-      selectedImages.value = imageUrls;
-    });
   }
 };
 

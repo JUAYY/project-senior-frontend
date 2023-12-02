@@ -12,9 +12,14 @@
       <div class="pl-3">( 2 3 * 2 3 p x)</div>
     </div>
     <div class="grid grid-cols-3 gap-10 px-28 py-10 h-[400px]">
-      <div class="bg-white" @click="pushToEditTemplate">01</div>
-      <div class="bg-white" @click="pushToEditTemplate">02</div>
-      <div class="bg-white" @click="pushToEditTemplate">03</div>
+      <div
+        v-for="(template, index) in templates"
+        :key="index"
+        class="bg-white"
+        @click="pushToEditTemplate(template)"
+      >
+        <img :src="template.cover_image_url" />
+      </div>
     </div>
     <!-- facebook -->
 
@@ -51,11 +56,29 @@
   </div>
 </template>
 <script setup>
+import { ref } from "vue";
+import { onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { getAllTemplates } from "../api/template";
 
 const router = useRouter();
+const templates = ref([]);
 
-const pushToEditTemplate = () => {
-  return router.push({ name: "Edit" });
+const pushToEditTemplate = (template) => {
+  return router.push({ name: "Edit", params: { id: template.id } });
 };
+
+const getTemplates = async () => {
+  try {
+    const data = await getAllTemplates();
+    templates.value = data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+onMounted(async () => {
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  getTemplates();
+});
 </script>

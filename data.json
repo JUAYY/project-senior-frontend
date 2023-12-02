@@ -1,0 +1,245 @@
+{
+  "data": [
+    {
+      "type": "image",
+      "config": {
+        "x": 0,
+        "y": 0,
+        "width": 600,
+        "height": 600,
+        "src": "src/assets/background/background-red.png",
+        "name": "1",
+        "draggable": true
+      }
+    },
+    {
+      "type": "image",
+      "config": {
+        "x": 215,
+        "y": 100,
+        "width": 400,
+        "height": 500,
+        "src": "src/assets/model/model1.png",
+        "name": "1",
+        "draggable": true
+      }
+    },
+
+    {
+      "type": "image",
+      "config": {
+        "x": 200,
+        "y": 0,
+        "width": 600,
+        "height": 600,
+        "src": "src/assets/effect/effect-red.png",
+        "opacity": 0.3,
+        "draggable": true
+      }
+    },
+    {
+      "type": "image",
+      "config": {
+        "x": -150,
+        "y": 80,
+        "width": 600,
+        "height": 600,
+        "src": "src/assets/effect/white-effect.png",
+        "draggable": true,
+        "opacity": 0.8
+      }
+    },
+    {
+      "type": "image",
+      "config": {
+        "x": -30,
+        "y": 150,
+        "width": 400,
+        "height": 400,
+        "src": "src/assets/product/pink.png",
+        "name": "3",
+        "draggable": true
+      }
+    },
+    {
+      "type": "image",
+      "config": {
+        "x": 376,
+        "y": 850,
+        "rotation": "-180",
+        "width": 400,
+        "height": 400,
+        "src": "src/assets/product/pink.png",
+        "name": "6",
+        "draggable": true,
+        "opacity": 0.15
+      }
+    },
+    {
+      "type": "text",
+      "config": {
+        "x": 70,
+        "y": 80,
+        "fontSize": "30",
+        "fontFamily": "Poppins",
+        "fill": "#ffffff",
+        "text": "R O S E  S K I N",
+        "name": "8",
+        "draggable": true
+      }
+    },
+    {
+      "type": "text",
+      "config": {
+        "x": 65,
+        "y": 120,
+        "fontSize": "14",
+        "fontFamily": "Poppins",
+        "fill": "white",
+        "text": "Lorem ipsum dolor sit amet, consectetur.",
+        "name": "9",
+        "draggable": true
+      }
+    },
+    {
+      "type": "text",
+      "config": {
+        "x": 45,
+        "y": 140,
+        "fontSize": "14",
+        "fontFamily": "Poppins",
+        "fill": "white",
+        "text": "Lorem ipsum dolor sit amet, consectetur magna.",
+        "name": "10",
+        "draggable": true
+      }
+    },
+
+    {
+      "type": "rect",
+      "config": {
+        "name": "19",
+        "rotation": 0,
+        "x": 100,
+        "y": 175,
+        "width": 150,
+        "height": 35,
+        "scaleX": 1,
+        "scaleY": 1,
+        "fill": "white",
+        "cornerRadius": 5,
+        "draggable": true
+      }
+    },
+    {
+      "type": "text",
+      "config": {
+        "x": 143,
+        "y": 186,
+        "fontStyle": "",
+        "fontSize": "14",
+        "fontFamily": "Poppins",
+        "text": "BUY NOW",
+        "name": "11",
+        "draggable": true
+      }
+    },
+
+    {
+      "type": "image",
+      "config": {
+        "x": 165,
+        "y": 300,
+        "width": 80,
+        "height": 80,
+        "opacity": 0.9,
+        "src": "src/assets/effect/sparkle-white.png",
+        "name": "3",
+        "draggable": true
+      }
+    },
+    {
+      "type": "image",
+      "config": {
+        "x": 520,
+        "y": 270,
+        "width": 650,
+        "height": 650,
+        "rotation": 80,
+        "opacity": 0.7,
+        "src": "src/assets/flower/rose-pental.png",
+        "name": "14",
+        "draggable": true
+      }
+    },
+
+    {
+      "type": "image",
+      "config": {
+        "x": 250,
+        "y": 350,
+        "width": 650,
+        "height": 650,
+        "rotation": 270,
+        "opacity": 0.5,
+        "src": "src/assets/flower/rose-pental.png",
+        "name": "16",
+        "draggable": true
+      }
+    },
+    {
+      "type": "image",
+      "config": {
+        "x": 215,
+        "y": 350,
+        "width": 180,
+        "height": 180,
+        "opacity": 0.8,
+        "src": "src/assets/flower/rose-pental.png",
+        "name": "17",
+        "draggable": true
+      }
+    },
+    {
+      "type": "image",
+      "config": {
+        "x": 50,
+        "y": 570,
+        "width": 100,
+        "height": 100,
+        "rotation": "-90",
+        "opacity": 0.2,
+        "src": "src/assets/flower/rose.png",
+        "name": "13",
+        "draggable": true
+      }
+    },
+    {
+      "type": "image",
+      "config": {
+        "x": 50,
+        "y": 420,
+        "width": 100,
+        "height": 100,
+        "src": "src/assets/flower/rose.png",
+        "name": "12",
+        "draggable": true
+      }
+    },
+    {
+      "type": "text",
+      "config": {
+        "x": 180,
+        "y": 500,
+        "rotation": "-90",
+        "fontSize": "30",
+        "fontFamily": "Sacramento",
+        "fontStyle": "bold",
+        "text": "- rose skin -",
+        "opacity": 0.5,
+        "name": "7",
+        "draggable": true
+      }
+    }
+  ]
+}
