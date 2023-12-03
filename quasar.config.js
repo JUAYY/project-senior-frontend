@@ -56,7 +56,9 @@ module.exports = configure((ctx) => {
       },
 
       env: {
-        API: process.env.API_URL || "http://localhost:3000/api",
+        API: ctx.dev
+          ? "http://localhost:3000/api" // development
+          : "https://ingenuity-api-dw3lybjuxa-as.a.run.app/api", // production
       },
 
       vueRouterMode: "history", // available values: 'hash', 'history'
