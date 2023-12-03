@@ -1,11 +1,12 @@
 import { LocalStorage } from "quasar";
 import { api } from "src/boot/axios";
 
-export const createContent = async (name, user_id, elements) => {
+export const createContent = async (name, user_id, elements, image) => {
   const res = await api.post(`/contents`, {
     name: name,
     user_id: user_id,
     elements: elements,
+    cover_image_url: image,
   });
   return res.data;
 };

@@ -299,6 +299,7 @@ const updateTransformer = () => {
 const displayImage = async (config) => {
   const image = new window.Image();
   image.src = config.src;
+  image.crossOrigin = "*";
   image.onload = () => {
     config.image = image;
   };

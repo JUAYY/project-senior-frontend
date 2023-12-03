@@ -265,6 +265,7 @@ import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 import { createContent } from "../api/content";
 import { getOneTemplate } from "src/api/template";
+import { upload } from "src/api/file";
 
 const router = useRouter();
 const route = useRoute();
@@ -324,8 +325,9 @@ const downloadDataURL = (config) => {
   refKonva.value.downloadDataURL(config);
 };
 
-const getTemplate = async (id) => {
+const getTemplate = async () => {
   try {
+    const id = route.params.id;
     const data = await getOneTemplate(id);
     items.value = data.elements;
 
@@ -336,39 +338,34 @@ const getTemplate = async (id) => {
   }
 };
 
-const saveChange = async () => {
-  const user = JSON.parse(sessionStorage.getItem("user"));
-
-  const name = nickname.value;
-  const user_id = user.id;
-  const elements = items.value;
+const saveChange = async (blob) => {
   try {
-    const content = await createContent(name, user_id, elements);
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    /**
+     * @description upload file to api
+     */
+    const data = new FormData();
+    data.append("file", blob, "filename.png");
+    const file = await upload(data);
+
+    const mapElements = items.value.map((element) => {
+      if (element.type === "image") delete element.config.image;
+      return element;
+    });
+
+    const name = nickname.value;
+    const user_id = user.id;
+    const elements = mapElements;
+
+    await createContent(name, user_id, elements, file.url);
+    await getTemplate();
   } catch (error) {
     console.log(error);
   }
 };
 
-const onFilesAdded = (files) => {
-  if (files && files.length > 0) {
-    const imagePromises = files.map((file) => {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          resolve(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(imagePromises).then((imageUrls) => {
-      selectedImages.value = imageUrls;
-    });
-  }
-};
-
 onMounted(() => {
-  const templateId = route.params.id;
-  getTemplate(templateId);
+  getTemplate();
 });
 </script>
