@@ -53,6 +53,10 @@ module.exports = configure(function (/* ctx */) {
         node: "node16",
       },
 
+      env: {
+        API: process.env.API || "http://localhost:3000/api",
+      },
+
       vueRouterMode: "hash", // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
